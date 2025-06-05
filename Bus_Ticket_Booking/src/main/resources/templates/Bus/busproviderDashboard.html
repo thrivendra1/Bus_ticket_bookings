@@ -49,8 +49,13 @@
 .table
 {
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.2em;
 
+}
+.table th
+{
+  background-color: #2485e6 !important;
+  color: white;
 }
 
 .card
@@ -81,7 +86,7 @@
 }
 .updatebutton:hover
 {
-  background-color: #77b1ec;
+  background-color: rgb(219, 172, 85);
   color: black;
 }
 
@@ -96,7 +101,21 @@
 }
 .Deletebutton:hover
 {
-  background-color: rgb(239, 209, 209);
+  background-color: rgb(205, 60, 60);
+  color: black;
+}
+.ViewButton
+{
+  background-color: rgb(85, 138, 237);
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  border-radius:12px;
+  margin: 10px 20px;
+}
+.ViewButton:hover
+{
+  background-color: #77b1ec;
   color: black;
 }
 .addbus
@@ -125,7 +144,7 @@
 
 <main>
     <div class="buscompanyname">
-        <h2>Lakshmi</h2>
+        <h2 th:text="${busprovder.name}" class="text-uppercase">Lakshmi</h2>
         <a th:href="@{/busProvider/addbus}" class="addbus btn btn-success">Add bus</a>
     </div>
 
@@ -135,24 +154,31 @@
                 <h2>YOUR BUSES</h2>
             </div>
             <table class="table table-bordered ">
-                <thead>
-                <tr>
+                <thead class="bg-primary">
+                <tr class="bg-primary">
                     <th>Bus Name</th>
-                    <th >Starting Point <span>& Time</span></th>
-                    <th>Destination Point <span>& Time</span></th>
+                    <th>Bus Number</th>
+                    <th >Starting Point</th>
+                    <th>Time</th>
+                    <th>Destination Point</th>
+                    <th>Time</th>
                     <th>Price</th>
                     <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Sri</td>
-                    <td>chennai - 16:00</td>
-                    <td>Salem - 23:00</td>
-                    <td>600</td>
+                <tr th:each="bus:${buses}">
+                    <td th:text="${bus.busName}">Sri</td>
+                    <td th:text="${bus.busNumber}">xyz-1234</td>
+                    <td th:text="${bus.startingPoint}">chennai </td>
+                    <td th:text="${bus.startTime}">16:00 </td>
+                    <td th:text="${bus.destinationPoint}">Salem</td>
+                    <td th:text="${bus.destinationTime}">23:00</td>
+                    <td th:text="${bus.price}">600</td>
                     <td>
-                        <a href="" class="updatebutton">Update</a>
-                        <a href="" class="Deletebutton">Delete</a>
+                        <a th:href="@{'/busProvider/upadteTheBusData/' + ${bus.id} }" class="updatebutton">Update</a>
+                        <a th:href="@{'/busProvider/deleteTheBus/' + ${bus.id} }" class="Deletebutton">Delete</a>
+                        <a href="" class="ViewButton ">View</a>
 
                     </td>
                 </tr>

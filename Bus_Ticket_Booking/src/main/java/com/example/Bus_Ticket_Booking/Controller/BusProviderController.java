@@ -1,17 +1,19 @@
 package com.example.Bus_Ticket_Booking.Controller;
 
 import com.example.Bus_Ticket_Booking.Dto.BusProviderDto;
+import com.example.Bus_Ticket_Booking.Dto.BusesDto;
 import com.example.Bus_Ticket_Booking.Service.BusProviderService;
+import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/busProvider")
@@ -21,6 +23,7 @@ public class BusProviderController
     private BusProviderService busProviderService;
     private PassengerService passengerService;
     private PasswordEncoder passwordEncoder;
+    private BusesService busesService;
 
 
     @GetMapping("/registration")
@@ -28,7 +31,7 @@ public class BusProviderController
     {
         BusProviderDto busProviderDto=new BusProviderDto();
         model.addAttribute("busProvider",busProviderDto);
-        return "busOperatorRegistration";
+        return "Bus/busOperatorRegistration";
     }
 
     @PostMapping("/saveRegisration")
@@ -44,7 +47,7 @@ public class BusProviderController
         }
         if(bindingResult.hasErrors())
         {
-            return "busOperatorRegistration";
+            return "Bus/busOperatorRegistration";
         }
 
         busProviderDto.setPassword(passwordEncoder.encode(busProviderDto.getPassword()));
@@ -54,15 +57,69 @@ public class BusProviderController
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model)
+    public String dashboard(Authentication authentication,Model model)
     {
-        return "busproviderDashboard";
+        String email=authentication.getName();
+        BusProviderDto busProviderDto=busProviderService.findBusProviderByEmailId(email);
+        model.addAttribute("busprovder",busProviderDto);
+
+        List<BusesDto> busesDtos=busesService.findBusesByBusProviderEmailId(email);
+        model.addAttribute("buses",busesDtos);
+
+        return "Bus/busproviderDashboard";
     }
 
     @GetMapping("/addbus")
     public String addBus(Model model)
     {
+        BusesDto busesDto=new BusesDto();
+        model.addAttribute("busdto",busesDto);
 
-        return "addBus";
+        return "Bus/addBus";
+    }
+
+    @PostMapping("/Savethebuses")
+    public String SaveTHeBuses(@ModelAttribute("busdto") BusesDto busesDto, Authentication authentication)
+    {
+        String email=authentication.getName();
+        BusProviderDto busProviderDto=busProviderService.findBusProviderByEmailId(email);
+
+        // Set the busProvider ID
+        busesDto.setBusProvider_id(busProviderDto.getId());
+
+        // Save the bus
+        busesService.saveBueses(busesDto);
+
+        return "redirect:/busProvider/dashboard";
+
+    }
+
+
+    @GetMapping("/deleteTheBus/{id}")
+    public String deleteTheBus(@PathVariable("id") Long id)
+    {
+        busesService.deleteBusById(id);
+        return "redirect:/busProvider/dashboard";
+    }
+
+    @GetMapping("/upadteTheBusData/{id}")
+    public String upadteTheBusData(@PathVariable("id") Long id,Model model)
+    {
+        if (id == null) {
+            // Handle error, redirect, or show message
+            return "redirect:/busProvider/dashboard?error=invalid_id";
+        }
+        BusesDto busesDto=busesService.findyById(id);
+
+        model.addAttribute("oldbus",busesDto);
+
+        return "Bus/update_bus";
+    }
+
+    @PostMapping("/savetheupdatebus")
+    public String savetheupdatebus(@ModelAttribute("oldbus") BusesDto busesDto)
+    {
+        busesService.updateTheBus(busesDto);
+        return "redirect:/busProvider/dashboard";
     }
 }

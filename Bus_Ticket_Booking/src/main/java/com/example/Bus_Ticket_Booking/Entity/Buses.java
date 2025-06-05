@@ -22,10 +22,14 @@ public class Buses
     private String busNumber;
 
     @Column(nullable = false)
-    private String Starting_Point_Time;
+    private String startingPoint;
+
+    private String startTime;
 
     @Column(nullable = false)
-    private String Destination_Point_Time;
+    private String destinationPoint;
+
+    private String destinationTime;
 
 
     @Column(nullable = false)

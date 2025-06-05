@@ -14,8 +14,10 @@ public class BusesDto
     private String busName;
 
     private String busNumber;
-    private String Starting_Point_Time;
-    private String Destination_Point_Time;
+    private String startingPoint;
+    private String startTime;
+    private String destinationPoint;
+    private String destinationTime;
 
     private double price;
 

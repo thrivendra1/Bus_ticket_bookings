@@ -1,18 +1,19 @@
 package com.example.Bus_Ticket_Booking.Controller;
 
+import com.example.Bus_Ticket_Booking.Dto.BusesDto;
 import com.example.Bus_Ticket_Booking.Dto.PassengerDto;
 import com.example.Bus_Ticket_Booking.Entity.Passenger;
 import com.example.Bus_Ticket_Booking.Service.BusProviderService;
+import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class PassengerController
 {
     private PassengerService passengerService;
     private BusProviderService busProviderService;
+    private BusesService busesService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -29,7 +31,7 @@ public class PassengerController
     {
         PassengerDto passenger=new PassengerDto();
         model.addAttribute("passenger",passenger);
-        return "passengerRegistration";
+        return "Passenger/passengerRegistration";
     }
 
     @PostMapping("/savePassenger")
@@ -46,7 +48,7 @@ public class PassengerController
 
         if (bindingResult.hasErrors())
         {
-            return "passengerRegistration";
+            return "Passenger/passengerRegistration";
         }
 
         passengerDto.setPassword(passwordEncoder.encode(passengerDto.getPassword()));
@@ -58,6 +60,18 @@ public class PassengerController
     @GetMapping("/dashboard")
     public String Dashboard(Model model)
     {
-        return "";
+        return "Passenger/passengerdashboard";
+    }
+
+    @GetMapping("/search")
+    public String serachbus(@RequestParam("form") String form,
+                            @RequestParam("to") String to,
+                            Model model
+                            )
+    {
+        List<BusesDto> busesDtos=busesService.findByRoute(form,to);
+
+        model.addAttribute("buses",busesDtos);
+        return "Passenger/afterBusSearch";
     }
 }
