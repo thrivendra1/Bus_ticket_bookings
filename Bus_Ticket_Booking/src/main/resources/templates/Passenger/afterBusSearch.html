@@ -66,6 +66,8 @@ input
 {
   color:  #1976D2;
   font-weight: bold;
+  text-decoration:underline;
+
 }
 
 .search
@@ -166,7 +168,7 @@ input
 </nav>
 <main >
   <div class="username">
-    <h2>THRIVENDRA</h2>
+    <h2 th:text="${passenger.name}" class="text-uppercase">THRIVENDRA</h2>
     <a href="">Tickets</a>
   </div>
 

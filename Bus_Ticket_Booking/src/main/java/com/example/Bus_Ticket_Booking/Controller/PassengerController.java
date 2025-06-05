@@ -7,6 +7,8 @@ import com.example.Bus_Ticket_Booking.Service.BusProviderService;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,17 +60,27 @@ public class PassengerController
     }
 
     @GetMapping("/dashboard")
-    public String Dashboard(Model model)
+    public String Dashboard(Authentication authentication,Model model)
     {
+        String email=authentication.getName();
+
+        PassengerDto passengerDto=passengerService.findByEmailid(email);
+        model.addAttribute("passenger",passengerDto);
         return "Passenger/passengerdashboard";
     }
 
     @GetMapping("/search")
     public String serachbus(@RequestParam("form") String form,
                             @RequestParam("to") String to,
+                            Authentication authentication,
                             Model model
                             )
     {
+        String email=authentication.getName();
+
+        PassengerDto passengerDto=passengerService.findByEmailid(email);
+        model.addAttribute("passenger",passengerDto);
+
         List<BusesDto> busesDtos=busesService.findByRoute(form,to);
 
         model.addAttribute("buses",busesDtos);
