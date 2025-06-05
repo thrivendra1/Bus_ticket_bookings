@@ -19,6 +19,9 @@ public class Buses
     private String busName;
 
     @Column(nullable = false)
+    private String busNumber;
+
+    @Column(nullable = false)
     private String Starting_Point_Time;
 
     @Column(nullable = false)
