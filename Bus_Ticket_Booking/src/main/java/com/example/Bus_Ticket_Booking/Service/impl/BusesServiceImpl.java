@@ -23,29 +23,44 @@ public class BusesServiceImpl implements BusesService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public BusesDto saveBueses(BusesDto busesDto) {
-        Buses bus = new Buses();
+//    public BusesDto saveBueses(BusesDto busesDto) {
+//        Buses bus = new Buses();
+//
+//        bus.setBusName(busesDto.getBusName());
+//        bus.setBusNumber(busesDto.getBusNumber());
+//        bus.setStartingPoint(busesDto.getStartingPoint());
+//        bus.setStartTime(busesDto.getStartTime());
+//        bus.setDestinationPoint(busesDto.getDestinationPoint());
+//        bus.setDestinationTime(busesDto.getDestinationTime());
+//        bus.setPrice(busesDto.getPrice());
+//
+//        // Fetch BusProvider entity from database using ID
+//        BusProvider provider = busProviderRepository.findById(busesDto.getBusProvider_id())
+//                                                    .orElseThrow(() -> new RuntimeException("BusProvider not found"));
+//
+//        // Set relation
+//        bus.setBusProvider(provider);
+//
+//        // Save entity
+//        busesRepository.save(bus);
+//
+//        return modelMapper.map(bus,BusesDto.class);
+//    }
 
-        bus.setBusName(busesDto.getBusName());
-        bus.setBusNumber(busesDto.getBusNumber());
-        bus.setStartingPoint(busesDto.getStartingPoint());
-        bus.setStartTime(busesDto.getStartTime());
-        bus.setDestinationPoint(busesDto.getDestinationPoint());
-        bus.setDestinationTime(busesDto.getDestinationTime());
-        bus.setPrice(busesDto.getPrice());
+    @Override
+    public BusesDto saveBueses(BusesDto dto) {
+        Buses bus = modelMapper.map(dto, Buses.class);
 
-        // Fetch BusProvider entity from database using ID
-        BusProvider provider = busProviderRepository.findById(busesDto.getBusProvider_id())
-                                                    .orElseThrow(() -> new RuntimeException("BusProvider not found"));
-
-        // Set relation
+        // Fetch and set BusProvider
+        BusProvider provider = busProviderRepository.findById(dto.getBusProvider_id())
+                .orElseThrow(() -> new RuntimeException("BusProvider not found"));
         bus.setBusProvider(provider);
 
-        // Save entity
-        busesRepository.save(bus);
-
-        return modelMapper.map(bus,BusesDto.class);
+        Buses savedBus = busesRepository.save(bus);
+        return modelMapper.map(savedBus, BusesDto.class);
     }
+
+
 
     @Override
     public List<BusesDto> findBusesByBusProviderEmailId(String emailId) {
@@ -70,14 +85,35 @@ public class BusesServiceImpl implements BusesService {
         busesRepository.deleteById(id);
     }
 
-    @Override
-    public BusesDto findyById(Long id) {
+//    @Override
+//    public BusesDto findyById(Long id) {
+//
+//        Buses buses=busesRepository.findById(id)
+//                .orElseThrow(()->new RuntimeException("No buses"));
+//
+//        return modelMapper.map(buses,BusesDto.class);
+//    }
+@Override
+public BusesDto findyById(Long id) {
+    Buses buses = busesRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("No buses"));
 
-        Buses buses=busesRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("No buses"));
-
-        return modelMapper.map(buses,BusesDto.class);
+    BusesDto busesDto = new BusesDto();
+    busesDto.setId(buses.getId());
+    busesDto.setBusName(buses.getBusName());
+    busesDto.setBusNumber(buses.getBusNumber());
+    busesDto.setStartingPoint(buses.getStartingPoint());
+    busesDto.setStartTime(buses.getStartTime());
+    busesDto.setDestinationPoint(buses.getDestinationPoint());
+    busesDto.setDestinationTime(buses.getDestinationTime());
+    busesDto.setPrice(buses.getPrice());
+    // Set busProvider_id manually from the entity’s relation
+    if (buses.getBusProvider() != null) {
+        busesDto.setBusProvider_id(buses.getBusProvider().getId());
     }
+    return busesDto;
+}
+
 
     @Override
     public BusesDto updateTheBus(BusesDto busesDto) {
@@ -92,6 +128,7 @@ public class BusesServiceImpl implements BusesService {
         existingbus.setDestinationPoint(busesDto.getDestinationPoint());
         existingbus.setDestinationTime(busesDto.getDestinationTime());
         existingbus.setPrice(busesDto.getPrice());
+
 
         Buses updatedBus=busesRepository.save(existingbus);
         return modelMapper.map(updatedBus,BusesDto.class);

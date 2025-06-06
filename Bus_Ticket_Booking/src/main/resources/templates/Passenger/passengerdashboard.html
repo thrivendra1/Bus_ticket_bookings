@@ -129,7 +129,7 @@ input
 <main >
   <div class="username">
     <h2 th:text="${passenger.name}" class="text-uppercase">THRIVENDRA</h2>
-    <a href="">Tickets</a>
+    <a th:href="@{/passenger/ticketHistory}">Tickets</a>
   </div>
 
   <form th:action="@{/passenger/search}" method="get">

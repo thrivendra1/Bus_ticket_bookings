@@ -18,8 +18,6 @@ public class BusesDto
     private String startTime;
     private String destinationPoint;
     private String destinationTime;
-
     private double price;
-
     private  Long busProvider_id;
 }

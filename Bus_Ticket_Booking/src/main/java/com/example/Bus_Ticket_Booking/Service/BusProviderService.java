@@ -7,4 +7,6 @@ public interface BusProviderService {
     BusProviderDto saveBusProvider(BusProviderDto busProviderDto);
 
     BusProviderDto findBusProviderByEmailId(String emailId);
+
+    BusProviderDto findById(Long id);
 }

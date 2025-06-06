@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  <title>After Bus Search</title>
+  <title>ticket History</title>
   <style>
+
     *{
   padding: 0;
   margin: 0;
@@ -121,6 +121,7 @@ input
   max-width: 94%;
   padding: 10px;
   margin-left: 40px;
+  margin-top: 100px;
 }
 .busdiaplay h4
 {
@@ -145,6 +146,7 @@ input
   color: white !important;
   font-weight: bolder;
 }
+
 .bookbutton
 {
   text-decoration: none;
@@ -160,76 +162,50 @@ input
 <body>
 <nav class="logo navbar navbar-dark mb-4 bg-primary fixed-top ">
   <div class="container">
-    <span class="text-white mb-0">SRI BUS</span>
+    <span class="text-white mb-0 navbar-brand">SRI BUS</span>
     <form th:action="@{/logout}" method="post">
       <button type="submit" class="btn btn-info">Logout</button>
     </form>
   </div>
 </nav>
-<main >
-  <div class="username">
-    <h2 th:text="${passenger.name}" class="text-uppercase">THRIVENDRA</h2>
-    <a href="">Tickets</a>
+<div class="card busdiaplay">
+  <div class="card-body">
+    <h4 class="card-title mb-4">History</h4>
+
+    <div>
+      <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="bg-primary tablehead">
+        <tr class="bg-primary">
+          <th>Bus Company</th>
+          <th>Bus Name</th>
+          <th>Bus Number</th>
+          <th>Date</th>
+          <th >Starting Point</th>
+          <th>Time</th>
+          <th>Destination Point</th>
+          <th>Time</th>
+
+          <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tic : ${tickets}">
+          <td th:text="${tic.busProvider.name}"></td>
+          <td th:text="${tic.buses.busName} "></td>
+          <td th:text="${tic.buses.busNumber} "></td>
+          <td th:text="${tic.BookedDate}"></td>
+          <td th:text="${tic.buses.startingPoint} "></td>
+          <td th:text="${tic.buses.startTime}"></td>
+          <td th:text="${tic.buses.destinationPoint} "></td>
+          <td th:text="${tic.buses.destinationTime}"></td>
+          <td th:text="${tic.buses.price}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <form th:action="@{/passenger/search}" method="get">
-    <div class="shadow">
-      <div  class="search container">
-        <div class="searchfrom">
-          <label for="form">Form</label>
-          <input type="text" class="form-control" name="form" id="form">
-        </div>
-        <div class="searchfrom">
-          <label for="to">TO</label>
-          <input type="text" class="form-control" name="to" id="to">
-        </div>
-        <button type="submit" class="searchbutton">Search</button>
-      </div>
-
-    </div>
-  </form>
-
-  <!-- searcher bus display area -->
-
-  <div class="card busdiaplay">
-    <div class="card-body">
-      <h4 class="card-title mb-4">Buses</h4>
-
-      <div>
-        <table class="table table-bordered table-hover text-center align-middle">
-          <thead class="bg-primary tablehead">
-          <tr class="bg-primary">
-            <th>Bus Name</th>
-            <th>Bus Number</th>
-            <th >Starting Point</th>
-            <th>Time</th>
-            <th>Destination Point</th>
-            <th>Time</th>
-            <th>Price</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="bus:${buses}">
-            <td th:text="${bus.busName}">Sri</td>
-            <td th:text="${bus.busNumber}">xyz-1234</td>
-            <td th:text="${bus.startingPoint}">chennai </td>
-            <td th:text="${bus.startTime}">16:00 </td>
-            <td th:text="${bus.destinationPoint}">Salem</td>
-            <td th:text="${bus.destinationTime}">23:00</td>
-            <td th:text="${bus.price}">600</td>
-            <td>
-              <a th:href="@{'/passenger/getBookingDetails/'+ ${bus.id} }" class="bookbutton btn btn-success">Book</a>
-            </td>
-
-          </tr>
-          </tbody>
-
-        </table>
-      </div>
-    </div>
-
-  </div>
+</div>
 
 </main>
 

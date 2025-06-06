@@ -104,6 +104,8 @@
 
             <div class="formbussadder">
                 <form  th:object="${busdto}"  th:action="@{/busProvider/Savethebuses}" method="post"  >
+<!--                    <input type="hidden" th:field="*{id}" th:value="${busprovider.id}">-->
+                    <input type="hidden" th:field="*{busProvider_id}" th:value="${busprovider.id}">
 
                     <div class="mb-3">
                         <label for="BusName" class="form-label">Bus Name</label>

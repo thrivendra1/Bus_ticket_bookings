@@ -35,4 +35,13 @@ public class BusProviderServiceImpl implements BusProviderService {
         }
         return modelMapper.map(busProvider,BusProviderDto.class);
     }
+
+    @Override
+    public BusProviderDto findById(Long id) {
+
+        BusProvider busProvider=busProviderRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("No busProvider not found"));
+
+        return modelMapper.map(busProvider,BusProviderDto.class);
+    }
 }

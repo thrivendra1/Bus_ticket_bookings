@@ -1,13 +1,16 @@
 package com.example.Bus_Ticket_Booking.Controller;
 
+import com.example.Bus_Ticket_Booking.Dto.BusProviderDto;
 import com.example.Bus_Ticket_Booking.Dto.BusesDto;
 import com.example.Bus_Ticket_Booking.Dto.PassengerDto;
+import com.example.Bus_Ticket_Booking.Dto.TicketBookingDto;
 import com.example.Bus_Ticket_Booking.Entity.Passenger;
+import com.example.Bus_Ticket_Booking.Entity.TicketBooking;
 import com.example.Bus_Ticket_Booking.Service.BusProviderService;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
+import com.example.Bus_Ticket_Booking.Service.TicketBookingService;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ public class PassengerController
     private PassengerService passengerService;
     private BusProviderService busProviderService;
     private BusesService busesService;
+    private TicketBookingService ticketBookingService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -85,5 +89,67 @@ public class PassengerController
 
         model.addAttribute("buses",busesDtos);
         return "Passenger/afterBusSearch";
+    }
+
+    @GetMapping("/getBookingDetails/{id}")
+    public String getBookingDetails(@PathVariable("id") Long id, Model model)
+    {
+        //Fetch the bus details
+        BusesDto busesDto=busesService.findyById(id);
+        model.addAttribute("bus",busesDto);
+
+        //Fetch the bus provider details
+        BusProviderDto busProviderDto=busProviderService.findById(busesDto.getBusProvider_id());
+        model.addAttribute("provider", busProviderDto);
+
+        //prepare booking Dto
+        TicketBookingDto ticketBookingDto=new TicketBookingDto();
+        ticketBookingDto.setBusesId(busesDto.getId());
+        ticketBookingDto.setBusProviderId(busesDto.getBusProvider_id());
+        model.addAttribute("ticket", ticketBookingDto);
+
+
+        return "ticket/ticketBookingPage";
+    }
+
+    // Handle booking form submission
+    @PostMapping("/saveTheBooking")
+    public String saveTheBooking(@ModelAttribute("ticket") TicketBookingDto ticketBookingDto,
+                                 Authentication authentication,Model model)
+    {
+        //Fetch the passenger
+
+        String emailId=authentication.getName();
+        PassengerDto passengerDto=passengerService.findByEmailid(emailId);
+
+        ticketBookingDto.setPassengerId(passengerDto.getId());
+
+        //fec
+        ticketBookingDto.setBusProviderId(ticketBookingDto.getBusProviderId());
+
+        ticketBookingDto.setBusesId(ticketBookingDto.getBusesId());
+        // Save booking
+        ticketBookingService.saveBooking(ticketBookingDto);
+        return "redirect:/passenger/dashboard";
+    }
+
+
+    @GetMapping("/ticketHistory")
+    public String tickerHistory(Authentication authentication,Model model)
+    {
+        String email=authentication.getName();
+        // Fetch the passenger using the login details
+        PassengerDto passengerDto=passengerService.findByEmailid(email);
+        model.addAttribute("passenger",passengerDto);
+        //Fetch all tickets were match by passenger id
+
+//        List<TicketBookingDto> allTickets=ticketBookingService.getTicketsByPassengerId(passengerDto.getId());
+//        model.addAttribute("tickets",allTickets);
+        List<TicketBooking> tickets = ticketBookingService.getTicketsByPassengerId(passengerDto.getId());
+        model.addAttribute("tickets", tickets);
+
+
+
+        return "ticket/ticketHistory";
     }
 }

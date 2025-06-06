@@ -70,9 +70,13 @@ public class BusProviderController
     }
 
     @GetMapping("/addbus")
-    public String addBus(Model model)
+    public String addBus(Authentication authentication,Model model)
     {
+        String email=authentication.getName();
+        BusProviderDto busProviderDto=busProviderService.findBusProviderByEmailId(email);
+        model.addAttribute("busprovider",busProviderDto);
         BusesDto busesDto=new BusesDto();
+        busesDto.setBusProvider_id(busProviderDto.getId());
         model.addAttribute("busdto",busesDto);
 
         return "Bus/addBus";
@@ -81,15 +85,17 @@ public class BusProviderController
     @PostMapping("/Savethebuses")
     public String SaveTHeBuses(@ModelAttribute("busdto") BusesDto busesDto, Authentication authentication)
     {
-        String email=authentication.getName();
-        BusProviderDto busProviderDto=busProviderService.findBusProviderByEmailId(email);
-
-        // Set the busProvider ID
-        busesDto.setBusProvider_id(busProviderDto.getId());
+//        String email=authentication.getName();
+//        BusProviderDto busProviderDto=busProviderService.findBusProviderByEmailId(email);
+//
+//        // Set the busProvider ID
+//        busesDto.setBusProvider_id(busProviderDto.getId());
 
         // Save the bus
+//        busesService.saveBueses(busesDto);
+//
+//        return "redirect:/busProvider/dashboard";
         busesService.saveBueses(busesDto);
-
         return "redirect:/busProvider/dashboard";
 
     }
