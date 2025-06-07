@@ -143,5 +143,10 @@ public BusesDto findyById(Long id) {
                 .toList();
     }
 
+    @Override
+    public Buses findById(Long id) {
+       return busesRepository.findById(id).orElseThrow(()->new RuntimeException("No bus"));
+    }
+
 }
 

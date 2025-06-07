@@ -2,10 +2,14 @@ package com.example.Bus_Ticket_Booking.Controller;
 
 import com.example.Bus_Ticket_Booking.Dto.BusProviderDto;
 import com.example.Bus_Ticket_Booking.Dto.BusesDto;
+import com.example.Bus_Ticket_Booking.Entity.Buses;
+import com.example.Bus_Ticket_Booking.Entity.TicketBooking;
 import com.example.Bus_Ticket_Booking.Service.BusProviderService;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
+import com.example.Bus_Ticket_Booking.Service.TicketBookingService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -24,6 +29,7 @@ public class BusProviderController
     private PassengerService passengerService;
     private PasswordEncoder passwordEncoder;
     private BusesService busesService;
+    private TicketBookingService ticketBookingService;
 
 
     @GetMapping("/registration")
@@ -127,5 +133,25 @@ public class BusProviderController
     {
         busesService.updateTheBus(busesDto);
         return "redirect:/busProvider/dashboard";
+    }
+
+    @GetMapping("/viewBusTickets/{busId}")
+    public String showDateEntryForm(@PathVariable Long busId, Model model) {
+        model.addAttribute("busId", busId);
+        return "Bus/dateEntryForm";
+    }
+
+    @PostMapping("/viewBusTickets")
+    public String showTicketsForDate(@RequestParam Long busId,
+                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate bookedDate,
+                                     Model model) {
+        Buses bus = busesService.findById(busId);
+        model.addAttribute("bus", bus);
+
+        List<TicketBooking> tickets = ticketBookingService.findByBusIdAndBookedDate(busId, bookedDate);
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("bookedDate", bookedDate);
+
+        return "Bus/busTicketsByDate";
     }
 }

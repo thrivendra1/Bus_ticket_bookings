@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -50,6 +51,16 @@ public class TicketBookingServiceImpl implements TicketBookingService {
 
 //        return ticketBookings.stream().map(a->modelMapper.map(a,TicketBookingDto.class)).toList();
         return ticketBookings;
+    }
+
+    @Override
+    public void deleteTicket(Long id) {
+        ticketBookingRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TicketBooking> findByBusIdAndBookedDate(Long busId, LocalDate bookedDate) {
+        return ticketBookingRepository.findByBusesIdAndBookedDate(busId, bookedDate);
     }
 
 

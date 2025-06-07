@@ -16,7 +16,7 @@ public class TicketBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate BookedDate;
+    private LocalDate bookedDate;
 
     @ManyToOne
     @JoinColumn(name = "passenger_id")

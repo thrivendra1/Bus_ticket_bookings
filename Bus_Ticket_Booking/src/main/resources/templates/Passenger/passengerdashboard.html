@@ -115,6 +115,26 @@ input
   background-color: rgb(214, 209, 209) !important;
   color: black !important;
 }
+    .ticketclass
+{
+    margin-left: 800px;
+    margin-right: -100px;
+    margin-top: 20px;
+
+}
+.ticketclass a
+{
+  margin-right: 200px;
+  background-color: red;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #1976D2;
+  color: white !important;
+  text-decoration:none;
+  font-size: 1.5em;
+  font-weight: bold;
+  border-radius: 12px;
+}
   </style>
 </head>
 <body>
@@ -129,7 +149,10 @@ input
 <main >
   <div class="username">
     <h2 th:text="${passenger.name}" class="text-uppercase">THRIVENDRA</h2>
-    <a th:href="@{/passenger/ticketHistory}">Tickets</a>
+    <div class="ticketclass">
+      <a th:href="@{/passenger/bookedticket}">TIcket</a>
+    </div>
+    <a th:href="@{/passenger/ticketHistory}">History</a>
   </div>
 
   <form th:action="@{/passenger/search}" method="get">

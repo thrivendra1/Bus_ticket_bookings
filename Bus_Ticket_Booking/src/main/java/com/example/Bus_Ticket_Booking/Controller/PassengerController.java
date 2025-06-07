@@ -30,6 +30,7 @@ public class PassengerController
     private BusesService busesService;
     private TicketBookingService ticketBookingService;
 
+
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/register")
@@ -147,9 +148,31 @@ public class PassengerController
 //        model.addAttribute("tickets",allTickets);
         List<TicketBooking> tickets = ticketBookingService.getTicketsByPassengerId(passengerDto.getId());
         model.addAttribute("tickets", tickets);
-
-
-
         return "ticket/ticketHistory";
     }
+
+
+    @GetMapping("/bookedticket")
+    public String bookedTicket(Authentication authentication,Model model)
+    {
+        String email=authentication.getName();
+        // Fetch the passenger using the login details
+        PassengerDto passengerDto=passengerService.findByEmailid(email);
+
+        List<TicketBooking> ticketBookingList=ticketBookingService.getTicketsByPassengerId(passengerDto.getId());
+
+        TicketBooking ticket=ticketBookingList.get(ticketBookingList.size()-1);
+        model.addAttribute("ticket",ticket);
+        return "ticket/bookedticket";
+
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteTicker(@PathVariable("id") Long id)
+    {
+        ticketBookingService.deleteTicket(id);
+        return "redirect:/passenger/dashboard";
+    }
+
+
 }
