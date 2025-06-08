@@ -6,12 +6,18 @@ import com.example.Bus_Ticket_Booking.Entity.Buses;
 import com.example.Bus_Ticket_Booking.Repository.BusProviderRepository;
 import com.example.Bus_Ticket_Booking.Repository.BusesRepository;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Tag(
+        name = "it make curd operation",
+        description = "it make the full operation in curd like save the bus , deleted bus "
+)
 @Service
 public class BusesServiceImpl implements BusesService {
 
@@ -23,30 +29,9 @@ public class BusesServiceImpl implements BusesService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    public BusesDto saveBueses(BusesDto busesDto) {
-//        Buses bus = new Buses();
-//
-//        bus.setBusName(busesDto.getBusName());
-//        bus.setBusNumber(busesDto.getBusNumber());
-//        bus.setStartingPoint(busesDto.getStartingPoint());
-//        bus.setStartTime(busesDto.getStartTime());
-//        bus.setDestinationPoint(busesDto.getDestinationPoint());
-//        bus.setDestinationTime(busesDto.getDestinationTime());
-//        bus.setPrice(busesDto.getPrice());
-//
-//        // Fetch BusProvider entity from database using ID
-//        BusProvider provider = busProviderRepository.findById(busesDto.getBusProvider_id())
-//                                                    .orElseThrow(() -> new RuntimeException("BusProvider not found"));
-//
-//        // Set relation
-//        bus.setBusProvider(provider);
-//
-//        // Save entity
-//        busesRepository.save(bus);
-//
-//        return modelMapper.map(bus,BusesDto.class);
-//    }
 
+    @Operation
+            (summary = "it save the new bus")
     @Override
     public BusesDto saveBueses(BusesDto dto) {
         Buses bus = modelMapper.map(dto, Buses.class);
@@ -60,7 +45,9 @@ public class BusesServiceImpl implements BusesService {
         return modelMapper.map(savedBus, BusesDto.class);
     }
 
-
+        @Operation(
+                summary = "if find all buses using the bus operator email"
+        )
 
     @Override
     public List<BusesDto> findBusesByBusProviderEmailId(String emailId) {
@@ -85,14 +72,8 @@ public class BusesServiceImpl implements BusesService {
         busesRepository.deleteById(id);
     }
 
-//    @Override
-//    public BusesDto findyById(Long id) {
-//
-//        Buses buses=busesRepository.findById(id)
-//                .orElseThrow(()->new RuntimeException("No buses"));
-//
-//        return modelMapper.map(buses,BusesDto.class);
-//    }
+    @Operation
+            (summary = "it find the bus by using it id")
 @Override
 public BusesDto findyById(Long id) {
     Buses buses = busesRepository.findById(id)
@@ -115,6 +96,9 @@ public BusesDto findyById(Long id) {
 }
 
 
+@Operation(
+        summary = "it update the existing bus data"
+)
     @Override
     public BusesDto updateTheBus(BusesDto busesDto) {
 
@@ -134,6 +118,8 @@ public BusesDto findyById(Long id) {
         return modelMapper.map(updatedBus,BusesDto.class);
     }
 
+    @Operation
+            (summary = "it find the bus route")
     @Override
     public List<BusesDto> findByRoute(String form, String to) {
         List<Buses> buses=busesRepository.findByStartingPointIgnoreCaseAndDestinationPointIgnoreCase(form,to);

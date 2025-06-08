@@ -7,6 +7,8 @@ import com.example.Bus_Ticket_Booking.Repository.BusesRepository;
 import com.example.Bus_Ticket_Booking.Repository.PassengerRepository;
 import com.example.Bus_Ticket_Booking.Repository.TicketBookingRepository;
 import com.example.Bus_Ticket_Booking.Service.TicketBookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+@Tag(
+        name = "this layer work was to make the tickets"
+)
 @Service
 @AllArgsConstructor
 public class TicketBookingServiceImpl implements TicketBookingService {
@@ -24,6 +29,8 @@ public class TicketBookingServiceImpl implements TicketBookingService {
     private final BusesRepository busesRepository;
     private final ModelMapper modelMapper;
 
+    @Operation
+            (summary = "it save the ticket if any user book it")
     @Override
     public TicketBookingDto saveBooking(TicketBookingDto ticketBookingDto) {
 
@@ -44,6 +51,7 @@ public class TicketBookingServiceImpl implements TicketBookingService {
         return modelMapper.map(booking,TicketBookingDto.class);
     }
 
+    @Operation(summary = "it get all tickets from using the passenger id")
     @Override
     public List<TicketBooking> getTicketsByPassengerId(Long passengerId) {
 
@@ -53,11 +61,13 @@ public class TicketBookingServiceImpl implements TicketBookingService {
         return ticketBookings;
     }
 
+    @Operation(summary = "deleted the ticket by it id")
     @Override
     public void deleteTicket(Long id) {
         ticketBookingRepository.deleteById(id);
     }
 
+    @Operation(summary = "it get ticket for bus operator by seraching based on day")
     @Override
     public List<TicketBooking> findByBusIdAndBookedDate(Long busId, LocalDate bookedDate) {
         return ticketBookingRepository.findByBusesIdAndBookedDate(busId, bookedDate);

@@ -8,6 +8,9 @@ import com.example.Bus_Ticket_Booking.Service.BusProviderService;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
 import com.example.Bus_Ticket_Booking.Service.TicketBookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@Tag(name = "Bus Provider",
+        description = "Endpoints for bus provider registration, dashboard, and bus management")
 @Controller
 @RequestMapping("/busProvider")
 @AllArgsConstructor
@@ -31,6 +36,10 @@ public class BusProviderController
     private BusesService busesService;
     private TicketBookingService ticketBookingService;
 
+    @Operation(
+            summary = "Show registration form for bus providers",
+            responses = @ApiResponse(responseCode = "200", description = "Registration form page")
+    )
 
     @GetMapping("/registration")
     public String Registration(Model model)
@@ -40,7 +49,10 @@ public class BusProviderController
         return "Bus/busOperatorRegistration";
     }
 
-    @PostMapping("/saveRegisration")
+    @Operation(
+            summary = "Register a new bus provider"
+    )
+            @PostMapping("/saveRegisration")
     public String saveRegistration(@ModelAttribute("busProvider") BusProviderDto busProviderDto, BindingResult bindingResult,Model model)
     {
         if(busProviderService.findBusProviderByEmailId(busProviderDto.getEmailId())!=null)
@@ -62,6 +74,11 @@ public class BusProviderController
         return "redirect:/login?success";
     }
 
+
+    @Operation(
+            summary = "Show bus provider dashboard",
+            responses = @ApiResponse(responseCode = "200", description = "Dashboard page")
+    )
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication,Model model)
     {
@@ -75,6 +92,10 @@ public class BusProviderController
         return "Bus/busproviderDashboard";
     }
 
+    @Operation(
+            summary = "Show add bus form",
+            responses = @ApiResponse(responseCode = "200", description = "Add bus form page")
+    )
     @GetMapping("/addbus")
     public String addBus(Authentication authentication,Model model)
     {
@@ -106,7 +127,9 @@ public class BusProviderController
 
     }
 
-
+    @Operation(
+            summary = "Delete a bus by ID"
+    )
     @GetMapping("/deleteTheBus/{id}")
     public String deleteTheBus(@PathVariable("id") Long id)
     {
@@ -127,7 +150,9 @@ public class BusProviderController
 
         return "Bus/update_bus";
     }
-
+    @Operation(
+            summary = "Save updated bus details"
+    )
     @PostMapping("/savetheupdatebus")
     public String savetheupdatebus(@ModelAttribute("oldbus") BusesDto busesDto)
     {
@@ -135,11 +160,17 @@ public class BusProviderController
         return "redirect:/busProvider/dashboard";
     }
 
+    @Operation(
+            summary = "Show date entry form for viewing tickets of a bus")
+
     @GetMapping("/viewBusTickets/{busId}")
     public String showDateEntryForm(@PathVariable Long busId, Model model) {
         model.addAttribute("busId", busId);
         return "Bus/dateEntryForm";
     }
+
+    @Operation(
+            summary = "Show tickets for a bus on a specific date")
 
     @PostMapping("/viewBusTickets")
     public String showTicketsForDate(@RequestParam Long busId,

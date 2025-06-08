@@ -1,5 +1,6 @@
 package com.example.Bus_Ticket_Booking.Entity;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Tag(
+        name = "it store the all tickets"
+)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

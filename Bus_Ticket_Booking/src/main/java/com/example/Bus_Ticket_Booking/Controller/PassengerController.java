@@ -10,6 +10,8 @@ import com.example.Bus_Ticket_Booking.Service.BusProviderService;
 import com.example.Bus_Ticket_Booking.Service.BusesService;
 import com.example.Bus_Ticket_Booking.Service.PassengerService;
 import com.example.Bus_Ticket_Booking.Service.TicketBookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+@Tag(name = "Passenger",
+        description = "Endpoints for passenger registration, dashboard, bus search, booking, and ticket management")
 
 @Controller
 @AllArgsConstructor
@@ -33,6 +38,7 @@ public class PassengerController
 
     private PasswordEncoder passwordEncoder;
 
+
     @GetMapping("/register")
     public String register(Model model)
     {
@@ -41,6 +47,9 @@ public class PassengerController
         return "Passenger/passengerRegistration";
     }
 
+    @Operation(
+            summary = "Register a new passenger"
+    )
     @PostMapping("/savePassenger")
     public String savePassenger(@ModelAttribute("passenger") PassengerDto passengerDto, BindingResult bindingResult, Model model)
     {
@@ -64,6 +73,9 @@ public class PassengerController
 
     }
 
+    @Operation(
+            summary = "Show passenger dashboard"
+    )
     @GetMapping("/dashboard")
     public String Dashboard(Authentication authentication,Model model)
     {
@@ -74,6 +86,8 @@ public class PassengerController
         return "Passenger/passengerdashboard";
     }
 
+    @Operation(
+            summary = "Search buses by route")
     @GetMapping("/search")
     public String serachbus(@RequestParam("form") String form,
                             @RequestParam("to") String to,
@@ -135,6 +149,9 @@ public class PassengerController
     }
 
 
+    @Operation(
+            summary = "View passenger ticket history")
+
     @GetMapping("/ticketHistory")
     public String tickerHistory(Authentication authentication,Model model)
     {
@@ -151,6 +168,8 @@ public class PassengerController
         return "ticket/ticketHistory";
     }
 
+    @Operation(
+            summary = "View most recently booked ticket")
 
     @GetMapping("/bookedticket")
     public String bookedTicket(Authentication authentication,Model model)
